@@ -10,48 +10,53 @@ Determine the optimal assignment of items to knapsacks as well as the maximum to
 An exact algorithm would explore all possible assignments of items to knapsacks. Here is a code in Julia that uses a brute force approach:
 
 =#
-using JUMP
+
 using Combinatorics
+function mkp(weights, values, capacities)
+    num_items = length(weights)
+    num_knapsacks = length(capacities)
+    dp = zeros(Int, num_items+1, capacities[1]+1, capacities[2]+1)
 
-function knapsack_exact(weights, values, capacities)
-    n = length(weights)
-    m = length(capacities)
-    best_value = 0
-    best_assignment = []
+    for i in 1:num_items
+        for c1 in 0:capacities[1]
+            for c2 in 0:capacities[2]
+                dp[i+1, c1+1, c2+1] = dp[i, c1+1, c2+1] # Case 1: item i is not included in any knapsack
 
-    for k in 0:n
-        for subset in combinations(1:n, k)
-            for assignment in product(fill(0:m, k)...)
-                valid = true
-                knapsack_weights = zeros(Int, m)
-
-                for (item, knapsack) in zip(subset, assignment)
-                    if knapsack > 0
-                        knapsack_weights[knapsack] += weights[item]
-                        if knapsack_weights[knapsack] > capacities[knapsack]
-                            valid = false
-                            break
-                        end
-                    end
+                if weights[i] <= c1
+                    # Case 2: item i is included in knapsack 1
+                    dp[i+1, c1+1, c2+1] = max(dp[i+1, c1+1, c2+1], dp[i, c1-weights[i]+1, c2+1] + values[i])
                 end
 
-                if valid
-                    value = sum([knapsack > 0 ? values[item] : 0 for (item, knapsack) in zip(subset, assignment)])
-                    if value > best_value
-                        best_value = value
-                        best_assignment = [(i, a) for (i, a) in zip(subset, assignment) if a > 0]
-                    end
+                if weights[i] <= c2
+                    # Case 3: item i is included in knapsack 2
+                    dp[i+1, c1+1, c2+1] = max(dp[i+1, c1+1, c2+1], dp[i, c1+1, c2-weights[i]+1] + values[i])
                 end
             end
         end
     end
 
-    return best_value, best_assignment
+    # Backtracking to find the optimal assignment
+    assignment = fill(0, num_items)
+    c1, c2 = capacities[1], capacities[2]
+    for i in num_items:-1:1
+        if dp[i+1, c1+1, c2+1] != dp[i, c1+1, c2+1]
+            if c1 >= weights[i] && dp[i+1, c1+1, c2+1] == dp[i, c1-weights[i]+1, c2+1] + values[i]
+                assignment[i] = 1
+                c1 -= weights[i]
+            elseif c2 >= weights[i]
+                assignment[i] = 2
+                c2 -= weights[i]
+            end
+        end
+    end
+
+    return dp[num_items+1, capacities[1]+1, capacities[2]+1], assignment
 end
 
+# Example usage
 weights = [2, 3, 4, 5, 6]
 values = [3, 4, 5, 8, 10]
 capacities = [10, 12]
-
-println(knapsack_exact(weights, values, capacities))
-
+max_value, assignment = mkp(weights, values, capacities)
+println("Max Value: ", max_value)
+println("Item Assignment: ", assignment)
