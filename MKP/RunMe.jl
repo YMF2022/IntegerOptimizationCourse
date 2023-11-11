@@ -26,6 +26,7 @@ weights, values, capacities = instance_generation(instance_gen,num_items,num_kna
 #2  Run the exact solution
 ##################################################
 
+
 # ============= Using optimisation package =======#
 # no constraints for the number of knapsack
 optimal_value_jump, assignment_jump,time_jump,knapsack_jump = solve_mkp(weights, values, capacities)
@@ -34,7 +35,7 @@ println("Assignment : \n", knapsack_jump)
 println("Computational Time for jump: ", time_jump)
 
 # ============= column generation =======#
-
+solve_mkp_with_coluna(weights, values, capacities)
 
 ##################################################
 #3  Run the heuristics

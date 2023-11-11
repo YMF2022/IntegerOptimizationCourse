@@ -1,9 +1,7 @@
-using Pkg
-Pkg.add("Coluna")
 
 #const MOI = MathOptInterface
 
-#function solve_mkp_with_coluna(weights, values, capacities)
+function solve_mkp_with_coluna(weights, values, capacities)
     num_items = length(weights)
     num_knapsacks = length(capacities)
     # ... (continue with additional setup)
@@ -63,4 +61,4 @@ Pkg.add("Coluna")
         error("No optimal solution found!")
     end
     return optimal_value, assignment, computational_time, knapsack_assignments
-#end
+end
