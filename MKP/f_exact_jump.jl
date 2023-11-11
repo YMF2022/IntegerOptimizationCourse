@@ -5,8 +5,6 @@ Pkg.add("JuMP")
 Pkg.add("Cbc")
 =#
 
-using JuMP
-using Cbc
 
 function solve_mkp(weights, values, capacities)
     num_items = length(weights)
@@ -14,6 +12,8 @@ function solve_mkp(weights, values, capacities)
 
     # Create a new model with the CBC solver
     model = Model(Cbc.Optimizer)
+    set_optimizer_attribute(model, "seconds", 30 * 60)  # 600 seconds = 10 minutes
+
 
     # Define variables: x[i, k] is a binary variable that is 1 if item i is in knapsack k
     @variable(model, x[1:num_items, 1:num_knapsacks], Bin)
@@ -39,9 +39,23 @@ function solve_mkp(weights, values, capacities)
     if termination_status(model) == MOI.OPTIMAL
         optimal_value = objective_value(model)
         assignment = [value(x[i, k]) for i in 1:num_items, k in 1:num_knapsacks]
-        return optimal_value, assignment
+        computational_time = @elapsed optimize!(model)
+        # Initialize an empty vector for each knapsack
+        knapsack_assignments = [Int[] for _ in 1:num_knapsacks]
+
+        # Iterate over each item and knapsack
+        for i in 1:num_items
+            for k in 1:num_knapsacks
+                # Check if item i is assigned to knapsack k
+                if value(x[i, k]) > 0.5  # Assuming binary decision variables
+                    push!(knapsack_assignments[k], i)
+                end
+            end
+        end
+
+        return optimal_value, assignment, computational_time, knapsack_assignments
     else
         error("No optimal solution found!")
     end
-end
 
+end

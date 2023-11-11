@@ -1,47 +1,48 @@
 #=
-Consider the following instance of the MKP:
-- Items: I = {1, 2, 3, 4, 5} with weights w = {2, 3, 4, 5, 6} and values v = {3, 4, 5, 8, 10}.
-- Knapsacks: K = {1, 2} with capacities c = {10, 12}.
-
+MKP for Tai-Yu's course
 Determine the optimal assignment of items to knapsacks as well as the maximum total value.
 =#
 
-#Load the instances and functions 
+using CSV, DataFrames
+using JuMP
+using Cbc
 
 include("Instance.jl")
 include("f_exact_DynamicProgramming.jl")
 include("f_exact_jump.jl")
 include("f_heuristics_greedy.jl")
 
+#### Sepcfify the inputs 
+instance_gen = 0 #if 1, generate a new instance; if 0, read the instance from the csv files
+num_items = 1500  # Large number of items
+num_knapsacks = 20  # Multiple knapsacks
+
 ##################################################
-#  Run the exact solution
+#1  Generate the instance
+##################################################
+weights, values, capacities = instance_generation(instance_gen,num_items,num_knapsacks)
+
+##################################################
+#2  Run the exact solution
 ##################################################
 
 # ============= Using optimisation package =======#
 # no constraints for the number of knapsack
-optimal_value, assignment = solve_mkp(weights, values, capacities)
-println("Optimal Value: ", optimal_value)
-println("Assignment Matrix: \n", assignment)
+optimal_value_jump, assignment_jump,time_jump,knapsack_jump = solve_mkp(weights, values, capacities)
+println("Optimal Value for jump: ", optimal_value_jump)
+println("Assignment : \n", knapsack_jump)
+println("Computational Time for jump: ", time_jump)
 
-#=================Dynamic programming solution====#
-# 2 knapsacks
-#=
-max_value, assignment = mkp_dp(weights, values, capacities)
-println("Optimal Value: ", max_value)
-println("Assigned Items: ", assignment)
-=#
-# 3 knapsacks
+# ============= column generation =======#
 
-# 4 knapsacks
-
-
-# 5 knapsacks
 
 ##################################################
-#  Run the heuristics solution
+#3  Run the heuristics
 ##################################################
 
 #========== Greedy solution ===============# 
-total_value, assigned_items = knapsack_heuristic(weights, values, capacities)
-println( "Optimal Value: ", total_value)
-println("Assigned Items: ", assigned_items)
+total_value_greedy, assigned_items_greedy, knapsack_greedy = knapsack_heuristic(weights, values, capacities)
+time_greedy = @elapsed result = knapsack_heuristic(weights, values, capacities)
+println( "Optimal Value: ", total_value_greedy)
+#println("Assigned Items: ", assigned_items)
+println("Computational Time: ", time_greedy)
