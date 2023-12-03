@@ -16,7 +16,7 @@ include("f_columngen.jl")
 #### Sepcfify the inputs 
 instance_gen = 1 #if 1, generate a new instance; if 0, read the instance from the csv files
 num_items = 1500  # Large number of items
-num_knapsacks = 100 # Multiple knapsacks
+num_knapsacks = 1000 # Multiple knapsacks
 folder_instance = pwd() * "/MKP/instances/"
 folder_result = pwd() * "/MKP/result/"
 

@@ -1,7 +1,6 @@
 
-function instance_generation(instance_gen, num_items, num_knapsacks)
+function instance_generation(instance_gen, num_items, num_knapsacks, folder_instance)
     # Parameters
-
     if instance_gen == 1 # Generate a new instance
         weights = rand(1:45, num_items)  # Random weights between 1 and 100
         values = rand(1:45, num_items)  # Random values between 1 and 100
@@ -12,14 +11,14 @@ function instance_generation(instance_gen, num_items, num_knapsacks)
         df_knapsacks = DataFrame(Knapsack=1:num_knapsacks, Capacity=capacities)
 
         # Save to CSV
-        CSV.write("mkp_items.csv", df_items)
-        CSV.write("mkp_knapsacks.csv", df_knapsacks)
+        CSV.write(folder_instance * "mkp_items_$num_items.csv", df_items)
+        CSV.write(folder_instance * "mkp_knapsacks_$num_knapsacks.csv", df_knapsacks)
 
         println("Data saved successfully.")
     else
         # Read the CSV files
-        df_items = CSV.read("mkp_items.csv", DataFrame)
-        df_knapsacks = CSV.read("mkp_knapsacks.csv", DataFrame)
+        df_items = CSV.read(folder_instance * "mkp_items_$num_items.csv", DataFrame)
+        df_knapsacks = CSV.read(folder_instance * "mkp_knapsacks_$num_knapsacks.csv", DataFrame)
 
         # Extract data from the DataFrames
         weights = df_items.Weight

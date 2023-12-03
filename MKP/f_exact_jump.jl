@@ -11,8 +11,8 @@ function solve_mkp(weights, values, capacities)
     num_knapsacks = length(capacities)
 
     # Create a new model with the CBC solver
-    model = Model(Cbc.Optimizer)
-    set_optimizer_attribute(model, "seconds", 30 * 60)  # 600 seconds = 10 minutes
+    model = Model(Gurobi.Optimizer)
+    set_optimizer_attribute(model, "Timelimit", 10 * 60)  # 600 seconds = 10 minutes
 
 
     # Define variables: x[i, k] is a binary variable that is 1 if item i is in knapsack k
@@ -36,6 +36,7 @@ function solve_mkp(weights, values, capacities)
     optimize!(model)
 
     # Check if a solution was found
+    status = termination_status(model)
     if termination_status(model) == MOI.OPTIMAL
         optimal_value = objective_value(model)
         assignment = [value(x[i, k]) for i in 1:num_items, k in 1:num_knapsacks]
@@ -53,8 +54,10 @@ function solve_mkp(weights, values, capacities)
             end
         end
 
-        return optimal_value, assignment, computational_time, knapsack_assignments
+        return optimal_value, assignment, computational_time, knapsack_assignments, status
     else
+        optimal_value = objective_value(model)
+        return optimal_value, 0, 10*60, 0, status
         error("No optimal solution found!")
     end
 
