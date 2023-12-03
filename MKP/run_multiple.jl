@@ -20,12 +20,6 @@ num_knapsacks = 2 # Multiple knapsacks
 folder_instance = pwd() * "/MKP/instances/"
 folder_result = pwd() * "/MKP/result/"
 
-# for num_knapsacks in knp_list
-#     Random.seed!(num_knapsacks)
-#     weights, values, capacities = instance_generation(instance_gen, num_items, num_knapsacks, folder_instance)
-# end
-
-
 function run_mul(knap_list::Vector)
     #1  Rdad the instance
     Random.seed!(num_knapsacks)
@@ -56,7 +50,7 @@ end
 
 # results = run_mul([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]) # samll instances
 # results = run_mul([100, 200, 300, 400, 500]) # a bit larger
-# results = run_mul([600, 700, 800, 900, 1000]) # a bit larger
+# results = run_mul([600, 700, 800, 900, 1000]) # larger
 
 knp_list = [50, 150, 250, 350, 450, 550, 650, 750, 850]
 results = run_mul(knp_list)
