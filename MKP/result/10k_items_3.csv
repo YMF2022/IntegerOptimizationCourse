@@ -1,0 +1,2 @@
+num_knapsacks,gurobi_obj,gurobi_soltime,status,greedy_obj,greedy_soltime
+950,230257.0,4.432628559,OPTIMAL,230257,0.00931644
