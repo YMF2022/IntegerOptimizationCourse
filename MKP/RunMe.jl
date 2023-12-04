@@ -47,21 +47,5 @@ println("Computational Time for jump: ", time_jump)
 total_value_greedy, assigned_items_greedy, knapsack_greedy = knapsack_heuristic(weights, values, capacities)
 time_greedy = @elapsed result = knapsack_heuristic(weights, values, capacities)
 println( "Optimal Value Greedy: ", total_value_greedy)
-#println("Assigned Items: ", assigned_items)
+println("Assigned Items: ", assigned_items)
 println("Computational Time: ", time_greedy)
-
-# results = DataFrame(gurobi_obj, gurobi_soltime, greedy_obj, greedy_soltime)
-
-assign_greedy = zeros(num_items,num_knapsacks)
-for a in assigned_items_greedy
-    assign_greedy[a...] = 1
-end
-
-for i in 1:1500
-    for j in 1:num_knapsacks
-        if assign_greedy[i,j] != assignment_jump[i,j]
-            @info (i,j)
-        end
-    end
-end
-assign_greedy == assignment_jump

@@ -5,8 +5,7 @@ Determine the optimal assignment of items to knapsacks as well as the maximum to
 
 using CSV, DataFrames, DelimitedFiles
 using JuMP, Gurobi
-using Coluna,BlockDecomposition,MathOptInterface
-using Random, Cbc
+using Random
 
 include("f_instance_generation.jl")
 include("f_exact_jump.jl")
@@ -52,6 +51,7 @@ end
 # results = run_mul([100, 200, 300, 400, 500]) # a bit larger
 # results = run_mul([600, 700, 800, 900, 1000]) # larger
 
-knp_list = [50, 150, 250, 350, 450, 550, 650, 750, 850]
+# knp_list = [50, 150, 250, 350, 450, 550, 650, 750, 850]
+knp_list = [950]
 results = run_mul(knp_list)
-CSV.write(folder_result * "10k_items_2.csv", results)
+CSV.write(folder_result * "10k_items_3.csv", results)
