@@ -2,8 +2,8 @@
 function instance_generation(instance_gen, num_items, num_knapsacks, folder_instance)
     # Parameters
     if instance_gen == 1 # Generate a new instance
-        weights = rand(1:45, num_items)  # Random weights between 1 and 100
-        values = rand(1:45, num_items)  # Random values between 1 and 100
+        weights = rand(1:45, num_items)  # Random weights between 1 and 45
+        values = rand(1:45, num_items)  # Random values between 1 and 45
         capacities = rand(50:500, num_knapsacks)  # Varying capacities for knapsacks
 
         # Create a DataFrame
